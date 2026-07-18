@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 int checkName(systemInfo *str) {
     FILE *fp = popen(SYSTEM_NAME, "r");
@@ -206,37 +207,37 @@ void autoScan(systemInfo *str) {
 
     while(checkName(str) != 0 && timesTry < 3) {
         timesTry++;
-        sleep(200);
+        Sleep(200);
         checkName(str);
     }
     timesTry = 0;
     while(checkSN(str) != 0 && timesTry < 3) {
         timesTry++;
-        sleep(200);
+        Sleep(200);
         checkSN(str);
     }
     timesTry = 0;
     while(checkMemory(str) != 0 && timesTry < 3) {
         timesTry++;
-        sleep(200);
+        Sleep(200);
         checkMemory(str);
     }
     timesTry = 0;
     while(checkStorageSSD(str) != 0 && timesTry < 3) {
         timesTry++;
-        sleep(200);
+        Sleep(200);
         checkStorageSSD(str);
     }
     timesTry = 0;
     while(checkStorageHDD(str) != 0 && timesTry < 3) {
         timesTry++;
-        sleep(200);
+        Sleep(200);
         checkStorageHDD(str);
     }
     timesTry = 0;
     while(checkGPU(str) != 0 && timesTry < 3) {
         timesTry++;
-        sleep(200);
+        Sleep(200);
         checkGPU(str);
     }
 }
