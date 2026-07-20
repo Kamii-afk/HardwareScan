@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 #include <stdlib.h>
 
 #include "check.h"
@@ -30,8 +31,12 @@ int reg(systemInfo *str) {
     fprintf(fp, "SN: %s\n", str->SN);
     fprintf(fp, "CPU: %s\n", str->cpuName);
     fprintf(fp, "RAM: %.2f\n", str->memorySize);
-    fprintf(fp, "SSD: %.2f\n", str->storageSizeSSD);
-    fprintf(fp, "HDD: %.2f\n", str->storageSizeHDD);
+    for(int i = 0; i < str->countSSD; i++) {
+        fprintf(fp, "SSD [%d]: \n   Name: %s\n   Size: %.2fGB\n", i, str->storSSD[i].name, str->storSSD[i].size);
+    }
+    for(int i = 0; i < str->countHDD; i++) {
+        fprintf(fp, "HDD [%d]: \n   Name: %s\n   Size: %.2fGB\n", i, str->storHDD[i].name, str->storHDD[i].size);
+    }
     fprintf(fp, "GPU: %s\n", str->gpuName);
     fprintf(fp, "Screen: \n");
     fprintf(fp, "Obs: \n");

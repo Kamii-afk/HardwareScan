@@ -112,15 +112,53 @@ int checkMemory(systemInfo *str) {
     return 0;
 }
 
-int checkStorageSSD(systemInfo *str) {
-    FILE *fp = popen(SSD_SIZE, "r");
+int checkNameSSD(systemInfo *str) {
+    FILE *fp = popen(SSD_NAME, "r");
     char buffer[64] = {0};
+    str->countSSD = 0;
 
     if(fp == NULL) {
         return 1;
     }
 
     while(fgets(buffer, sizeof(buffer), fp)) {
+        if(str->countSSD >=MAX_STORAGE) {
+            break;
+        }
+
+        buffer[strcspn(buffer, "\n\r")] = '\0';
+
+        if(strstr(buffer, "FriendlyName") != NULL) {
+            continue;
+        }
+
+        if(strstr(buffer, "---") != NULL) {
+            continue;
+        }
+
+        if(strlen(buffer) == 0) {
+            continue;
+        }
+
+        strcpy(str->storSSD[str->countSSD].name, buffer);
+        str->countSSD++;
+    }
+}
+
+int checkStorageSSD(systemInfo *str) {
+    FILE *fp = popen(SSD_SIZE, "r");
+    char buffer[64] = {0};
+    str->countSSD = 0;
+
+    if(fp == NULL) {
+        return 1;
+    }
+
+    while(fgets(buffer, sizeof(buffer), fp)) {
+        if(str->countSSD >= MAX_STORAGE) {
+            break;
+        }
+        
         buffer[strcspn(buffer, "\n\r")] = '\0';
 
         if(strstr(buffer, "Size") != NULL) {
@@ -131,27 +169,66 @@ int checkStorageSSD(systemInfo *str) {
             continue;
         }
 
-        if(strlen(buffer) > 0) {
-            break;
+        if(strlen(buffer) == 0) {
+            continue;
         }
-    }
 
-    unsigned long long bytesSize = strtoull(buffer, NULL, 10);
-    str->storageSizeSSD = (float)bytesSize / (1024 * 1024 * 1024);
+        unsigned long long bytesSize = strtoull(buffer, NULL, 10);
+        str->storSSD[str->countSSD].size = (float)bytesSize / (1024 * 1024 * 1024);
+        str->countSSD++;
+    }
 
     pclose(fp);
     return 0;
 }
 
+int checkNameHDD(systemInfo *str) {
+    FILE *fp = popen(HDD_NAME, "r");
+    char buffer[64] = {0};
+    str->countHDD = 0;
+
+    if(fp == NULL) {
+        return 1;
+    }
+
+    while(fgets(buffer, sizeof(buffer), fp)) {
+        if(str->countHDD >=MAX_STORAGE) {
+            break;
+        }
+
+        buffer[strcspn(buffer, "\n\r")] = '\0';
+
+        if(strstr(buffer, "FriendlyName") != NULL) {
+            continue;
+        }
+
+        if(strstr(buffer, "---") != NULL) {
+            continue;
+        }
+
+        if(strlen(buffer) == 0) {
+            continue;
+        }
+
+        strcpy(str->storHDD[str->countHDD].name, buffer);
+        str->countHDD++;
+    }
+}
+
 int checkStorageHDD(systemInfo *str) {
     FILE *fp = popen(HDD_SIZE, "r");
     char buffer[64] = {0};
+    str->countHDD = 0;
 
     if(fp == NULL) {
         return 1;
     }
 
     while(fgets(buffer, sizeof(buffer), fp) != NULL) {
+        if(str->countHDD >= MAX_STORAGE) {
+            break;
+        }
+        
         buffer[strcspn(buffer, "\n\r")] = '\0';
 
         if(strstr(buffer, "Size") != NULL) {
@@ -162,13 +239,14 @@ int checkStorageHDD(systemInfo *str) {
             continue;
         }
 
-        if(strlen(buffer) > 0) {
-            break;
+        if(strlen(buffer) == 0) {
+            continue;
         }
-    }
 
-    unsigned long long byteSize = strtoull(buffer, NULL, 10);
-    str->storageSizeHDD = (float)byteSize / (1024 * 1024 * 1024);
+        unsigned long long byteSize = strtoull(buffer, NULL, 10);
+        str->storHDD[str->countHDD].size = (float)byteSize / (1024 * 1024 * 1024);
+        str->countHDD++;
+    }
 
     pclose(fp);
     return 0;
@@ -211,7 +289,7 @@ void progressBar(const char *name, int current, int t) {
     printf("\r%-18s [", name);
 
     for(int i = 0; i < width; i++) {
-        printf(i < pos ? "█" : " ");
+        printf(i < pos ? "█" : "*");
     }
 
     printf("] %3d%%", (int)(progress * 100));
@@ -223,6 +301,7 @@ void autoScan(systemInfo *str) {
     int timesTry = 0;
     const int scanLength = 7;
 
+    progressBar("Initializing...", 0, scanLength);
     while(checkName(str) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
@@ -250,12 +329,19 @@ void autoScan(systemInfo *str) {
     }
     progressBar("Memory", 4, scanLength);
     timesTry = 0;
+    
+    while(checkNameSSD(str) != 0 && timesTry < 3) {
+        timesTry++;
+        Sleep(200);
+    }
+    progressBar("SSD Name", 5, scanLength);
+    timesTry = 0;
 
     while(checkStorageSSD(str) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
     }
-    progressBar("SSD", 5, scanLength);
+    progressBar("SSD Size", 5, scanLength);
     timesTry = 0;
 
     while(checkStorageHDD(str) != 0 && timesTry < 3) {

@@ -13,7 +13,7 @@ void checkPath(char *exePath) {
 
     char *last = strrchr(exePath, '\\');
 
-    if(last == NULL) {
+    if(last != NULL) {
         *last = '\0';
     }
 
@@ -24,9 +24,10 @@ int main() {
     setlocale(LC_ALL, ".UTF-8");
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
-    systemInfo str;
+    systemInfo str = {0};
     char option;
     char exePath[MAX_PATH];
+    char file[50];
 
     checkPath(exePath);
 
@@ -45,6 +46,7 @@ int main() {
     while(1) {
         switch(option) {
             case '1':
+            system("cls");
             autoScan(&str);
             reg(&str);
             system("pause");
