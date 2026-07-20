@@ -14,7 +14,7 @@ int reg(systemInfo *str) {
     char data[64];
     char arqName[50];
 
-    strftime(data, sizeof(data), "%Y-%m-%d_%H-%M", timeInfo);
+    strftime(data, sizeof(data), "%Y-%m-%d", timeInfo);
 
     snprintf(arqName, sizeof(arqName), "log_dat_%s.txt", data);
     
@@ -24,16 +24,17 @@ int reg(systemInfo *str) {
         return 1;
     }
 
+    fprintf(fp, "========================================\n");
     fprintf(fp, "===== %s =====\n", str->name);
-    fprintf(fp, "Nome: %s\n", str->name);
+    fprintf(fp, "Name: %s\n", str->name);
     fprintf(fp, "SN: %s\n", str->SN);
     fprintf(fp, "CPU: %s\n", str->cpuName);
-    fprintf(fp, "Memória: %.2f\n", str->memorySize);
+    fprintf(fp, "RAM: %.2f\n", str->memorySize);
     fprintf(fp, "SSD: %.2f\n", str->storageSizeSSD);
     fprintf(fp, "HDD: %.2f\n", str->storageSizeHDD);
-    fprintf(fp, "GPU: %.s\n", str->gpuName);
+    fprintf(fp, "GPU: %s\n", str->gpuName);
+    fprintf(fp, "\n");
 
     fclose(fp);
-    printf("Sucess...");
     return 0;
 }

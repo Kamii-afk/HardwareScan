@@ -202,42 +202,73 @@ int checkGPU(systemInfo *str) {
     return 0;
 }
 
+void progressBar(const char *name, int current, int t) {
+    const int width = 35;
+
+    float progress = (float)current / t;
+    int pos = progress * width;
+
+    printf("\r%-18s [", name);
+
+    for(int i = 0; i < width; i++) {
+        printf(i < pos ? "█" : " ");
+    }
+
+    printf("] %3d%%", (int)(progress * 100));
+
+    fflush(stdout);
+}
+
 void autoScan(systemInfo *str) {
     int timesTry = 0;
+    const int scanLength = 7;
 
     while(checkName(str) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
-        checkName(str);
     }
+    progressBar("Name", 1, scanLength);
     timesTry = 0;
+
     while(checkSN(str) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
-        checkSN(str);
     }
+    progressBar("SN", 2, scanLength);
     timesTry = 0;
+
+    while(checkCPU(str) != 0 && timesTry < 3) {
+        timesTry++;
+        Sleep(200);
+    }
+    progressBar("CPU", 3, scanLength);
+    timesTry = 0;
+
     while(checkMemory(str) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
-        checkMemory(str);
     }
+    progressBar("Memory", 4, scanLength);
     timesTry = 0;
+
     while(checkStorageSSD(str) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
-        checkStorageSSD(str);
     }
+    progressBar("SSD", 5, scanLength);
     timesTry = 0;
+
     while(checkStorageHDD(str) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
-        checkStorageHDD(str);
     }
+    progressBar("HDD", 6, scanLength);
     timesTry = 0;
+
     while(checkGPU(str) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
-        checkGPU(str);
     }
+    progressBar("GPU", 7, scanLength);
+    printf("\n");
 }

@@ -3,7 +3,7 @@
 
 #define NAME_SIZE 50
 #define SN_SIZE 30
-#define CPU_SIZE 30
+#define CPU_SIZE 50
 #define GPU_SIZE 30
 
 typedef struct{
@@ -23,6 +23,7 @@ int checkStorageSSD(systemInfo *str);
 int checkStorageHDD(systemInfo *str);
 int checkGPU(systemInfo *str);
 
+void progressBar(const char *name, int current, int t);
 void autoScan(systemInfo *str);
 
 #endif

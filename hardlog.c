@@ -2,12 +2,16 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <locale.h>
 
 #include "shellCommand.h"
 #include "check.h"
 #include "register.h"
 
 int main() {
+    setlocale(LC_ALL, ".UTF-8");
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
     systemInfo str;
     char option;
 
@@ -28,6 +32,7 @@ int main() {
             case '1':
             autoScan(&str);
             reg(&str);
+            system("pause");
             return 0;
 
             case '2':
