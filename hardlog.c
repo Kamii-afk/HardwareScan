@@ -8,12 +8,27 @@
 #include "check.h"
 #include "register.h"
 
+void checkPath(char *exePath) {
+    GetModuleFileNameA(NULL, exePath, MAX_PATH);
+
+    char *last = strrchr(exePath, '\\');
+
+    if(last == NULL) {
+        *last = '\0';
+    }
+
+    SetCurrentDirectoryA(exePath);
+}
+
 int main() {
     setlocale(LC_ALL, ".UTF-8");
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
     systemInfo str;
     char option;
+    char exePath[MAX_PATH];
+
+    checkPath(exePath);
 
     printf("===================\n");
     printf("   HardwareScan\n");

@@ -33,6 +33,8 @@ int reg(systemInfo *str) {
     fprintf(fp, "SSD: %.2f\n", str->storageSizeSSD);
     fprintf(fp, "HDD: %.2f\n", str->storageSizeHDD);
     fprintf(fp, "GPU: %s\n", str->gpuName);
+    fprintf(fp, "Screen: \n");
+    fprintf(fp, "Obs: \n");
     fprintf(fp, "\n");
 
     fclose(fp);
