@@ -6,6 +6,7 @@
 
 #include "shellCommand.h"
 #include "check.h"
+#include "searchall.h"
 #include "register.h"
 
 void checkPath(char *exePath) {
@@ -27,7 +28,6 @@ int main() {
     systemInfo str = {0};
     char option;
     char exePath[MAX_PATH];
-    char file[50];
 
     checkPath(exePath);
 
@@ -38,7 +38,7 @@ int main() {
 
     printf("[1] - AutoScan\n");
     printf("[2] - Manual Register\n");
-    printf("[3] - Empty option\n");
+    printf("[3] - Search\n");
     printf("[4] - Exit\n");
 
     option = getch();
@@ -53,9 +53,49 @@ int main() {
             return 0;
 
             case '2':
+            system("cls");
+            manualReg(&str);
+            system("pause");
             return 0;
             
             case '3':
+            {
+            char searchType;
+            char search[50];
+
+            system("cls");
+            printf("Type of Search:\n");
+            printf("[1] - Name\n[2] - SN\n[3] - CPU\n[4] - GPU\n[5] - Exit\n");
+            searchType = getch();
+            printf("Search: ");
+            fgets(search, sizeof(search), stdin);
+            search[strcspn(search, "\n")] = '\0';
+
+            switch(searchType) {
+                case '1':
+                searchAll(search, SEARCH_NAME);
+                break;
+
+                case '2':
+                searchAll(search, SEARCH_SN);
+                break;
+
+                case '3':
+                searchAll(search, SEARCH_CPU);
+                break;
+
+                case '4':
+                searchAll(search, SEARCH_GPU);
+                break;
+
+                case '5':
+                return 0;
+
+                default:
+                printf("Can't find this option\n");
+            }
+            system("pause");
+            }
             return 0;
             
             case '4':

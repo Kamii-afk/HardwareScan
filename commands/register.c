@@ -20,8 +20,11 @@ int reg(systemInfo *str) {
     snprintf(arqName, sizeof(arqName), "log_dat_%s.txt", data);
     
     FILE *fp = fopen(arqName, "a");
+    FILE *bin = fopen("data.bin", "ab");
 
-    if(fp == NULL) {
+    if(fp == NULL || bin == NULL) {
+        if(fp) fclose(fp);
+        if(bin) fclose(bin);
         return 1;
     }
 
@@ -42,6 +45,48 @@ int reg(systemInfo *str) {
     fprintf(fp, "Obs: \n");
     fprintf(fp, "\n");
 
+    fwrite(str, sizeof(*str), 1, bin);
+
+    fclose(bin);
     fclose(fp);
+    return 0;
+}
+
+int manualReg(systemInfo *str) {
+    printf("Name: ");
+    fgets(str->name, sizeof(str->name), stdin);
+    str->name[strcspn(str->name, "\n")] = '\0';
+    printf("SN: ");
+    fgets(str->SN, sizeof(str->SN), stdin);
+    str->SN[strcspn(str->SN, "\n")] = '\0';
+    printf("CPU: ");
+    fgets(str->cpuName, sizeof(str->cpuName), stdin);
+    str->cpuName[strcspn(str->cpuName, "\n")] = '\0';
+    printf("RAM: ");
+    scanf("%f", &str->memorySize);
+    getchar();
+    printf("Count SSD: ");
+    scanf("%d", &str->countSSD);
+    getchar();
+    for(int i = 0; i < str->countSSD; i++) {
+        strcpy(str->storSSD[i].name, "");
+        printf("SSD [%d]: ", i);
+        scanf("%f", &str->storSSD[i].size);
+        getchar();
+    }
+    printf("Count HDD: ");
+    scanf("%d", &str->countHDD);
+    getchar();
+    for(int i = 0; i < str->countHDD; i++) {
+        strcpy(str->storHDD[i].name, "");
+        printf("HDD [%d]: ", i);
+        scanf("%f", &str->storHDD[i].size);
+        getchar();
+    }
+    printf("GPU: ");
+    fgets(str->gpuName, sizeof(str->gpuName), stdin);
+    str->gpuName[strcspn(str->gpuName, "\n")] = '\0';
+
+    reg(str);
     return 0;
 }

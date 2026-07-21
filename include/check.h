@@ -35,5 +35,6 @@ int checkGPU(systemInfo *str);
 
 void progressBar(const char *name, int current, int t);
 void autoScan(systemInfo *str);
+void printStruct(systemInfo *str);
 
 #endif

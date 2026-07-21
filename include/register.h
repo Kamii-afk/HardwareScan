@@ -4,5 +4,6 @@
 #include "check.h"
 
 int reg(systemInfo *str);
+int manualReg(systemInfo *str);
 
 #endif

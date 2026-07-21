@@ -358,3 +358,19 @@ void autoScan(systemInfo *str) {
     progressBar("GPU", 7, scanLength);
     printf("\n");
 }
+
+void printStruct(systemInfo *str) {
+    printf("========================================\n");
+    printf("===== %s =====\n", str->name);
+    printf("Name: %s\n", str->name);
+    printf("SN: %s\n", str->SN);
+    printf("CPU: %s\n", str->cpuName);
+    printf("RAM: %.2f\n", str->memorySize);
+    for(int i = 0; i < str->countSSD;i++) {
+        printf("SSD[%d]: \n   Name: %s\n   Size: %.2f\n", i, str->storSSD[i].name, str->storSSD[i].size);
+    }
+    for(int i = 0; i < str->countHDD; i++) {
+        printf("HDD[%d]: \n   Name: %s\n   Size: %.2f\n", i, str->storHDD[i].name, str->storHDD[i].size);
+    }
+    printf("GPU: %s\n", str->gpuName);
+}
