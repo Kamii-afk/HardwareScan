@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <direct.h>
 #include <locale.h>
 
 #include "shellCommand.h"
@@ -28,6 +29,11 @@ void checkPath(char *exePath) {
     SetCurrentDirectoryA(exePath);
 }
 
+void createPaths() {
+    _mkdir("log");
+    _mkdir("data");
+}
+
 //TODO aply this custom setings on user interface
 /* void profileConfig() {
     FILE *config = fopen("../custom.config.bin", "rb");
@@ -47,6 +53,7 @@ int main() {
     char exePath[MAX_PATH];
 
     checkPath(exePath);
+    createPaths();
     
     do {
         printf("===================\n");

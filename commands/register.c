@@ -17,10 +17,10 @@ int reg(systemInfo *str) {
 
     strftime(data, sizeof(data), "%Y-%m-%d", timeInfo);
 
-    snprintf(arqName, sizeof(arqName), "log_dat_%s.txt", data);
+    snprintf(arqName, sizeof(arqName), "log/log_dat_%s.txt", data);
     
     FILE *fp = fopen(arqName, "a");
-    FILE *bin = fopen("data.bin", "ab");
+    FILE *bin = fopen("data/data.bin", "ab");
 
     if(fp == NULL || bin == NULL) {
         if(fp) fclose(fp);

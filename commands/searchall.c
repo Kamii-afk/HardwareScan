@@ -6,7 +6,7 @@
 #include "searchall.h"
 
 int searchAll(const char *value, searchTypes type) {
-    FILE *bin = fopen("data.bin", "rb");
+    FILE *bin = fopen("data/data.bin", "rb");
     systemInfo temp;
 
     while(fread(&temp, sizeof(systemInfo), 1, bin) == 1) {
