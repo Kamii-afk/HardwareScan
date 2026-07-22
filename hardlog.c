@@ -9,6 +9,13 @@
 #include "searchall.h"
 #include "register.h"
 
+//Model for user settings
+/* typedef struct {
+    int includeExtern;
+    int excludeOptins;
+}customConfig;
+customConfig custom; */
+
 void checkPath(char *exePath) {
     GetModuleFileNameA(NULL, exePath, MAX_PATH);
 
@@ -21,6 +28,16 @@ void checkPath(char *exePath) {
     SetCurrentDirectoryA(exePath);
 }
 
+//TODO aply this custom setings on user interface
+/* void profileConfig() {
+    FILE *config = fopen("../custom.config.bin", "rb");
+    if(config == NULL) {
+        return 1;
+    }
+
+    fread(&custom, sizeof(customConfig), 1, config);
+} */
+
 int main() {
     setlocale(LC_ALL, ".UTF-8");
     SetConsoleCP(CP_UTF8);
@@ -30,20 +47,20 @@ int main() {
     char exePath[MAX_PATH];
 
     checkPath(exePath);
+    
+    do {
+        printf("===================\n");
+        printf("   HardwareScan\n");
+        printf("===================\n");
+        printf("Select an option:\n");
+    
+        printf("[1] - AutoScan\n");
+        printf("[2] - Manual Register\n");
+        printf("[3] - Search\n");
+        printf("[4] - Exit\n");
+    
+        option = getch();
 
-    printf("===================\n");
-    printf("   HardwareScan\n");
-    printf("===================\n");
-    printf("Select an option:\n");
-
-    printf("[1] - AutoScan\n");
-    printf("[2] - Manual Register\n");
-    printf("[3] - Search\n");
-    printf("[4] - Exit\n");
-
-    option = getch();
-
-    while(1) {
         switch(option) {
             case '1':
             system("cls");
@@ -93,21 +110,23 @@ int main() {
 
                 default:
                 printf("Can't find this option\n");
+                break;
             }
             system("pause");
+            system("cls");
             }
-            return 0;
+            break;
             
             case '4':
-            printf("Canceled...\n");
-            system("pause");
             return 0;
 
             default:
             printf("That's not valid, please try again\n");
+            system("pause");
+            system("cls");
             break;
         }
-    }
-    system("pause");
+    }while (option != '4');
+    
     return 0;
 }

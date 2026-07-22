@@ -1,5 +1,6 @@
 #include "shellCommand.h"
 #include "check.h"
+#include "filter.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -106,8 +107,8 @@ int checkMemory(systemInfo *str) {
     pclose(fp);
     
     unsigned long long bytesValue = strtoull(buffer, NULL, 10);
-
     str->memorySize = (float)bytesValue / (1024 * 1024 * 1024);
+    memoryFilter(str);
 
     return 0;
 }
@@ -143,6 +144,9 @@ int checkNameSSD(systemInfo *str) {
         strcpy(str->storSSD[str->countSSD].name, buffer);
         str->countSSD++;
     }
+
+    pclose(fp);
+    return 0;
 }
 
 int checkStorageSSD(systemInfo *str) {
@@ -175,6 +179,7 @@ int checkStorageSSD(systemInfo *str) {
 
         unsigned long long bytesSize = strtoull(buffer, NULL, 10);
         str->storSSD[str->countSSD].size = (float)bytesSize / (1024 * 1024 * 1024);
+        storageFilter(1, str);
         str->countSSD++;
     }
 
@@ -213,6 +218,9 @@ int checkNameHDD(systemInfo *str) {
         strcpy(str->storHDD[str->countHDD].name, buffer);
         str->countHDD++;
     }
+
+    pclose(fp);
+    return 0;
 }
 
 int checkStorageHDD(systemInfo *str) {
@@ -245,6 +253,7 @@ int checkStorageHDD(systemInfo *str) {
 
         unsigned long long byteSize = strtoull(buffer, NULL, 10);
         str->storHDD[str->countHDD].size = (float)byteSize / (1024 * 1024 * 1024);
+        storageFilter(2, str);
         str->countHDD++;
     }
 
@@ -344,11 +353,18 @@ void autoScan(systemInfo *str) {
     progressBar("SSD Size", 5, scanLength);
     timesTry = 0;
 
+    while(checkNameHDD(str) != 0 && timesTry < 3) {
+        timesTry++;
+        Sleep(200);
+    }
+    progressBar("HDD Name", 6, scanLength);
+    timesTry = 0;
+
     while(checkStorageHDD(str) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
     }
-    progressBar("HDD", 6, scanLength);
+    progressBar("HDD Size", 6, scanLength);
     timesTry = 0;
 
     while(checkGPU(str) != 0 && timesTry < 3) {

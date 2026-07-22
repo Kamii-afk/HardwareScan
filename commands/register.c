@@ -33,12 +33,12 @@ int reg(systemInfo *str) {
     fprintf(fp, "Name: %s\n", str->name);
     fprintf(fp, "SN: %s\n", str->SN);
     fprintf(fp, "CPU: %s\n", str->cpuName);
-    fprintf(fp, "RAM: %.2f\n", str->memorySize);
+    fprintf(fp, "RAM: %.0fGB\n", str->memorySize);
     for(int i = 0; i < str->countSSD; i++) {
-        fprintf(fp, "SSD [%d]: \n   Name: %s\n   Size: %.2fGB\n", i, str->storSSD[i].name, str->storSSD[i].size);
+        fprintf(fp, "SSD [%d]: \n   Name: %s\n   Size: %.0fGB\n", i, str->storSSD[i].name, str->storSSD[i].size);
     }
     for(int i = 0; i < str->countHDD; i++) {
-        fprintf(fp, "HDD [%d]: \n   Name: %s\n   Size: %.2fGB\n", i, str->storHDD[i].name, str->storHDD[i].size);
+        fprintf(fp, "HDD [%d]: \n   Name: %s\n   Size: %.0fGB\n", i, str->storHDD[i].name, str->storHDD[i].size);
     }
     fprintf(fp, "GPU: %s\n", str->gpuName);
     fprintf(fp, "Screen: \n");
