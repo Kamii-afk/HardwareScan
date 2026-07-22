@@ -7,6 +7,12 @@
 #define GPU_SIZE 30
 #define MAX_STORAGE 5
 
+typedef enum{
+    CHECK_OK,
+    CHECK_ERR,
+    DUPLICATED
+}checkResult;
+
 typedef struct{
     char name[NAME_SIZE];
     float size;

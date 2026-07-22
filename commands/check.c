@@ -37,10 +37,11 @@ int checkName(systemInfo *str) {
 
 int checkSN(systemInfo *str) {
     FILE *fp = popen(SN_ID, "r");
+    FILE *bin = fopen("data/data.bin", "rb");
 
     if(fp == NULL) {
         strcpy(str->SN, "Can't read");
-        return 1;
+        return CHECK_ERR;
     }
 
     while(fgets(str->SN, sizeof(str->SN), fp) != NULL) {
@@ -60,7 +61,22 @@ int checkSN(systemInfo *str) {
     }
 
     pclose(fp);
-    return 0;
+
+    if(bin == NULL) {
+        return CHECK_OK;
+    }
+
+    systemInfo temp;
+    while(fread(&temp, sizeof(systemInfo), 1, bin) == 1) {
+        if(strcmp(str->SN, temp.SN) == 0) {
+            printf("\nThat SN already has been registered!\n");
+            fclose(bin);
+            return DUPLICATED;
+        }
+    }
+
+    fclose(bin);
+    return CHECK_OK;
 }
 
 int checkCPU(systemInfo *str) {
@@ -318,10 +334,22 @@ void autoScan(systemInfo *str) {
     progressBar("Name", 1, scanLength);
     timesTry = 0;
 
-    while(checkSN(str) != 0 && timesTry < 3) {
+    checkResult result;
+    do {
+        result = checkSN(str);
+
+        if(result == DUPLICATED) {
+        return;
+        }
+
+        if(result == CHECK_OK) {
+        break;
+        }
+
         timesTry++;
         Sleep(200);
-    }
+
+    }while(timesTry < 3);
     progressBar("SN", 2, scanLength);
     timesTry = 0;
 
