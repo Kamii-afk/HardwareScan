@@ -71,8 +71,9 @@ int main() {
         switch(option) {
             case '1':
             system("cls");
-            autoScan(&str);
-            reg(&str);
+            if(!autoScan(&str)){
+                reg(&str);
+            }
             system("pause");
             return 0;
 

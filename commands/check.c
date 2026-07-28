@@ -322,7 +322,7 @@ void progressBar(const char *name, int current, int t) {
     fflush(stdout);
 }
 
-void autoScan(systemInfo *str) {
+int autoScan(systemInfo *str) {
     int timesTry = 0;
     const int scanLength = 7;
 
@@ -339,7 +339,7 @@ void autoScan(systemInfo *str) {
         result = checkSN(str);
 
         if(result == DUPLICATED) {
-        return;
+        return 1;
         }
 
         if(result == CHECK_OK) {
@@ -401,6 +401,7 @@ void autoScan(systemInfo *str) {
     }
     progressBar("GPU", 7, scanLength);
     printf("\n");
+    return 0;
 }
 
 void printStruct(systemInfo *str) {
