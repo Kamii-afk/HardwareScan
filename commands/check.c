@@ -417,4 +417,5 @@ void printStruct(systemInfo *str) {
         printf("HDD[%d]: \n   Name: %s\n   Size: %.2f\n", i, str->storHDD[i].name, str->storHDD[i].size);
     }
     printf("GPU: %s\n", str->gpuName);
+    printf("Date: %s\n", str->date);
 }

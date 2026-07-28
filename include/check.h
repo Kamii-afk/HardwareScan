@@ -5,6 +5,7 @@
 #define SN_SIZE 30
 #define CPU_SIZE 50
 #define GPU_SIZE 30
+#define DATE_SIZE 15
 #define MAX_STORAGE 5
 
 typedef enum{
@@ -28,6 +29,7 @@ typedef struct{
     storage storHDD[2];
     int countHDD;
     char gpuName[GPU_SIZE];
+    char date[DATE_SIZE];
 }systemInfo;
 
 int checkName(systemInfo *str);

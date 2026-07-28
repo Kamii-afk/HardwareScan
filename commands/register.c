@@ -45,6 +45,7 @@ int reg(systemInfo *str) {
     fprintf(fp, "Obs: \n");
     fprintf(fp, "\n");
 
+    strcpy(str->date, data);
     fwrite(str, sizeof(*str), 1, bin);
 
     fclose(bin);
