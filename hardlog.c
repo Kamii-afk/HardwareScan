@@ -4,11 +4,42 @@
 #include <conio.h>
 #include <direct.h>
 #include <locale.h>
+#include <errno.h>
 
 #include "shellCommand.h"
 #include "check.h"
 #include "searchall.h"
 #include "register.h"
+#include "custom.h"
+
+int loadSettings(userCustom *settings) {
+    char option;
+    int status = checkCustom(settings);
+    
+    if(status == ENOENT) {
+        printf("custom settings are not available, use default?\nY/N");
+        option = getch();
+        if(option == 'Y' || option == 'y') {
+            useDefault(settings);
+            system("cls");
+        }else if(option == 'n' || option == 'N') {
+            return 1;
+        }
+    }
+
+    if(status == EACCES) {
+        printf("custom settings are not available, use default?\nY/N");
+        option = getch();
+        if(option == 'Y' || option == 'y') {
+            useDefault(settings);
+            system("cls");
+        }else if(option == 'n' || option == 'N') {
+            return 1;
+        }
+    }
+
+    return 0;
+}
 
 //Model for user settings
 /* typedef struct {
@@ -32,6 +63,7 @@ void checkPath(char *exePath) {
 void createPaths() {
     _mkdir("log");
     _mkdir("data");
+    _mkdir("custom");
 }
 
 //TODO aply this custom setings on user interface
@@ -49,11 +81,15 @@ int main() {
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
     systemInfo str = {0};
+    userCustom settings = {0};
     char option;
     char exePath[MAX_PATH];
 
     checkPath(exePath);
     createPaths();
+    if(loadSettings(&settings)) {
+        return 1;
+    }
     
     do {
         printf("===================\n");
@@ -64,7 +100,8 @@ int main() {
         printf("[1] - AutoScan\n");
         printf("[2] - Manual Register\n");
         printf("[3] - Search\n");
-        printf("[4] - Exit\n");
+        printf("[4] - Settings\n");
+        printf("[5] - Exit\n");
     
         option = getch();
 
@@ -117,7 +154,8 @@ int main() {
                 return 0;
 
                 default:
-                printf("Can't find this option\n");
+                printf("Can't find this option\nPlease, try again");
+                getchar();
                 break;
             }
             system("pause");
@@ -126,6 +164,11 @@ int main() {
             break;
             
             case '4':
+            configCustom(&settings);
+            system("cls");
+            break;
+            
+            case '5':
             return 0;
 
             default:
@@ -134,7 +177,7 @@ int main() {
             system("cls");
             break;
         }
-    }while (option != '4');
+    }while (option != '5');
     
     return 0;
 }
