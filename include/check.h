@@ -35,14 +35,14 @@ typedef struct{
 int checkName(systemInfo *str);
 int checkSN(systemInfo *str);
 int checkMemory(systemInfo *str);
-int checkNameSSD(systemInfo *str);
+int checkNameSSD(systemInfo *str, userCustom *settings);
 int checkStorageSSD(systemInfo *str);
 int checkNameHDD(systemInfo *str);
 int checkStorageHDD(systemInfo *str);
 int checkGPU(systemInfo *str);
 
 void progressBar(const char *name, int current, int t);
-int autoScan(systemInfo *str);
+int autoScan(systemInfo *str, userCustom *settings);
 void printStruct(systemInfo *str);
 
 #endif

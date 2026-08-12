@@ -108,7 +108,7 @@ int main() {
         switch(option) {
             case '1':
             system("cls");
-            if(!autoScan(&str)){
+            if(!autoScan(&str, &settings)){
                 reg(&str);
             }
             system("pause");

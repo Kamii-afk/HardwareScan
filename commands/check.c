@@ -1,6 +1,7 @@
 #include "shellCommand.h"
 #include "check.h"
 #include "filter.h"
+#include "custom.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -129,8 +130,8 @@ int checkMemory(systemInfo *str) {
     return 0;
 }
 
-int checkNameSSD(systemInfo *str) {
-    FILE *fp = popen(SSD_NAME, "r");
+/* int checkNameSSD(systemInfo *str, userCustom *settings) {
+    FILE *fp = popen(SSD_SCAN, "r");
     char buffer[64] = {0};
     str->countSSD = 0;
 
@@ -163,9 +164,50 @@ int checkNameSSD(systemInfo *str) {
 
     pclose(fp);
     return 0;
+} */
+
+int checkNameSSD(systemInfo *str, userCustom *settings) {
+    FILE *fp = popen(SSD_SCAN, "r");
+    char buffer[256] = {0};
+    str->countSSD = 0;
+
+    if(fp == NULL) {
+        return 1;
+    }
+
+    while(fgets(buffer, sizeof(buffer), fp)) {
+        if(str->countSSD >= MAX_STORAGE) {
+            break;
+        }
+
+        buffer[strcspn(buffer, "\n\r")] = '\0';
+
+        if(settings->excludeSel[EXCLUDE_USB] == TRUE && strstr(buffer, "USB") != NULL) {continue;}
+        if(settings->excludeSel[EXCLUDE_SSD] == TRUE && (strstr(buffer, "RAID") != NULL || strstr(buffer, "NVMe") != NULL || strstr(buffer, "SATA") != NULL)) {continue;}
+
+        char *separator = strchr(buffer, '|');
+        if(separator == NULL) {continue;}
+        char *busType = separator + 1;
+        *separator = '\0';
+        
+        strcpy(str->storSSD[str->countSSD].name, buffer);
+        
+        char *sizeSeparator = strchr(busType, '|');
+        if(sizeSeparator == NULL) {continue;}
+        *sizeSeparator = '\0';
+        char *size = sizeSeparator + 1;
+
+        unsigned long long bytesSize = strtoull(size, NULL, 10);
+        str->storSSD[str->countSSD].size = (float)bytesSize / (1024 * 1024 * 1024);
+        str->countSSD++;
+        
+    }
+
+    pclose(fp);
+    return 0;
 }
 
-int checkStorageSSD(systemInfo *str) {
+/* int checkStorageSSD(systemInfo *str) {
     FILE *fp = popen(SSD_SIZE, "r");
     char buffer[64] = {0};
     str->countSSD = 0;
@@ -201,7 +243,7 @@ int checkStorageSSD(systemInfo *str) {
 
     pclose(fp);
     return 0;
-}
+} */
 
 int checkNameHDD(systemInfo *str) {
     FILE *fp = popen(HDD_NAME, "r");
@@ -322,7 +364,7 @@ void progressBar(const char *name, int current, int t) {
     fflush(stdout);
 }
 
-int autoScan(systemInfo *str) {
+int autoScan(systemInfo *str, userCustom *settings) {
     int timesTry = 0;
     const int scanLength = 7;
 
@@ -367,7 +409,7 @@ int autoScan(systemInfo *str) {
     progressBar("Memory", 4, scanLength);
     timesTry = 0;
     
-    while(checkNameSSD(str) != 0 && timesTry < 3) {
+    while(checkNameSSD(str, settings) != 0 && timesTry < 3) {
         timesTry++;
         Sleep(200);
     }
